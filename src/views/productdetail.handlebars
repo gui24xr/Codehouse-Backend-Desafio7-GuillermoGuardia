@@ -78,7 +78,7 @@
                 <span class="title-font font-medium text-2xl text-gray-900">${{productDetail.price}}</span>
                
                    <!--AGREGADO A CARRITO-->
-                            <form action="/api/carts/65ea0a4ec26ddb52bfc5b436/products/{{productDetail.id}}"
+                            <form action="/api/carts/{{sessionData.user.cart}}/products/{{productDetail.id}}"
                                 method="post">
 
                                 <div class="w-full flex flex-col items-center gap-2">
@@ -93,6 +93,33 @@
                             </form>
 
 
+                             <form  class="my-3 border border-slate-200 p-3 flex flex-col items-center space-y-1">
+                            
+                            <div  class="flex w-full justify-around">
+                                <label for="counter-input" class="block text-sm font-medium text-gray-900 dark:text-white">Cantidad</label>
+                                <div class="relative flex items-center">
+                                    <button type="button" id="decrement-button-{{productDetail.id}}" onclick="decrementCounterQuantity(`{{productDetail.id}}`)"  class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                        <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                        </svg>
+                                    </button>
+                                    <input type="number"  id="counter-input-{{productDetail.id}}" class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center" value="1" required />
+                                    <button type="button" id="increment-button-{{productDetail.id}}" onclick="incrementCounterQuantity(`{{productDetail.id}}`,`{{productDetail.stock}}`)"  class="flex-shrink-0 bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                                        <svg class="w-2.5 h-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            
+                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">({{productDetail.stock}} disponibles)</p>
+                            
+                            <button id={{productDetail.id}} type="button" onclick="addThisProduct(event)"  class="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Agregar al carrito</button>
+                        
+                        </form>
+
+
                 </div>
             </div>
             </div>
@@ -100,3 +127,52 @@
 </div>
     
 </div>
+
+
+
+
+<script>
+
+
+alert('Holaaaaa')
+
+   
+function decrementCounterQuantity(id){
+    //Ya tengo el id y el stock del producto a cual quiero modificar la cantidad de su contador.
+    //capturo su contador con su id ya que sabemos que su contador se llama id="decrement-button-{{this.id}}"
+    const selectedInput = document.getElementById(`counter-input-${id}`)
+    //Le resto y cambio el valor numerico si es mayor a 2
+    if (selectedInput.value >= 2) selectedInput.value = Number(selectedInput.value) - 1
+}
+
+function incrementCounterQuantity(id,stock){
+    //Ya tengo el id y el stock del producto a cual quiero modificar la cantidad de su contador.
+    //capturo su contador con su id ya que sabemos que su contador se llama id="decrement-button-{{this.id}}"
+    const selectedInput = document.getElementById(`counter-input-${id}`)
+    //Le resto y cambio el valor numerico si es mayor a 2
+    if (selectedInput.value < Number(stock)) selectedInput.value = Number(selectedInput.value) + 1
+}
+
+function addThisProduct(event){
+ 
+      //sabemos que el boton tiene el id del producto x lo tanto tenemos el id del producto a agregar
+    //sabemos que el input quantity del producto se llama id="counter-input-{{this.id}}" entonces podemos obtener su valor
+    const productId = event.target.id
+    const selectedQuantityInput = document.getElementById(`counter-input-${productId}`)
+
+    const selectedQuantity = selectedQuantityInput.value
+    console.log(selectedQuantity)
+  
+    //con estos datos podemos hacer la solicitud http usando fetch
+    //Y de acuerdo a lo que envia el server mando una notiicacion de tostify
+      fetch(`/api/carts/${cartId}/products/${productId}`,{method:'POST', headers: {'Content-Type': 'application/json'},body: JSON.stringify({ quantity: selectedQuantity })})
+      .then(result => result.json())
+      .then(json => {
+        showNotification(`Se agregaron ${selectedQuantityInput} unidades del producto seleccionado a su carrito !`)
+        console.log(json.message)
+        //redirijo para que se renderice tddo y actualice cantidades.
+        window.location.href = '/products';
+        })
+}
+
+</script>

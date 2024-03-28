@@ -108,11 +108,12 @@ router.get('/products', async (req,res)=>{
     //console.log('Data sesion: ', req.session.data)
     try{
         //Sort el formulario solo permitira que solo llegue -1,1 o 0
-        console.log('Parametros que llegaron', limit,page,sort,query)
+        //console.log('Parametros que llegaron', limit,page,sort,query)
+        //console.log('SESSION: ', req.session.user)
         //Por ahora dejo query para que entre por params
         //La idea es cuanto este implementado en el form armar la query para enviar al manager
         const sortValue = sort == '1' ? 1 : sort == '-1' ? -1 : 0
-        console.log('SortValue', sortValue)
+        //console.log('SortValue', sortValue)
         const paginate = await productManager.getProductsPaginate(limit ? limit : 10,page ? page : 1,sortValue,query)
         //console.log(paginate)
         //Hago un mapeo de docs para mandar a rendrizar en handlebars. 
@@ -141,8 +142,11 @@ router.get('/products', async (req,res)=>{
         totalPages: paginate.totalPages,
         limit: paginate.limit,
         valuesToScript: JSON.stringify(paginate),
+        valuesSession: JSON.stringify(req.session.user),
+
         //mando los datos de session para renderizar... 
-        sessionData: req.session
+        //sessionData: req.session,
+        //usercartid: 'dgdghdg'//(req.session.user.cart).toString()
 
     
     }

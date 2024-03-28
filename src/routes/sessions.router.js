@@ -66,7 +66,8 @@ router.post('/api/sessions/login',passport.authenticate("login",{failureRedirect
     //Los datos del user logueado ahora van a venir en req.
     //Los trae req xq en la estrategia hice return(done,user)
     req.session.login = true
-    req.session.user = req.user//usuario//Incluye rol en los datos de user
+    req.session.user = req.user //req.user tiene role
+    req.session.admin = req.user.role == 'admin' ? true : false //Para saber si se trata de un admin
     res.redirect('/products')
 
 })
@@ -84,6 +85,7 @@ router.get("/githubcallback", passport.authenticate("github", {failureRedirect: 
     //Los trae req xq en la estrategia hice return(done,user)
     req.session.login = true
     req.session.user = req.user//usuario//Incluye rol en los datos de user
+    req.session.admin = req.user.role == 'admin' ? true : false //Para saber si se trata de un admin
     res.redirect('/products')
 
 })
@@ -95,6 +97,7 @@ router.get('/api/sessions/logout',(req,res)=>{
     if ( req.session.login ){
         req.session.login = false //Pongo esta propiedad inventada por mi a false.
         delete req.session.user //Le borro el user de la propiedad
+        delete req.session.admin //Lo mismo con admin
         req.session.destroy()
        
    
@@ -106,7 +109,7 @@ router.get('/api/sessions/logout',(req,res)=>{
 
 //Middleware para autorizacion a lugares que solo puede llegar un admin.
 function authAdmin(req,res,next){
-     if (req.session.rol == 'admin') return next() 
+     if (req.session.role == 'admin') return next() 
     else 
         return res.status(403).render('errorpage',{state:403,message:'Error de autorizacion... Se necesitan credenciales de admin para ingresar...'})//send('Error de autorizacion... Se necesitan credenciales de admin para ingresar...')
 }
@@ -134,7 +137,7 @@ function authlogged(req,res,next){
 router.get('/profile',authlogged,(req,res)=>{
 
     //res.send('El usuario logueado es Admin por eso puede llegar a aca...')
-    res.render('profile',{sessionData:req.session})
+    res.render('profile')
 })
 
 router.use('/failedregister',(req,res)=>{

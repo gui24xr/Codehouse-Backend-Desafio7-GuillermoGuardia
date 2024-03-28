@@ -30,7 +30,7 @@ export class CartsManager{
             }
             //Busco el carro por id.
             const searchedCart = await CartModel.findById(id).populate('products.product')
-            console.log('Me ireeee: ',searchedCart)
+         
             //Si no obtengo resultado salgo.
             if (!searchedCart){
                 console.log(`No se encuentra un carrito con id ${id}.`) 
@@ -58,34 +58,28 @@ export class CartsManager{
 
     
 async addProductInCart(cartId,productId,quantity){
-     /*Esta funcion agrega el  product Id pasado por parametro al carrito pasado por parametro y Retorna un objeto asi:
+     /*Esta funcion agrega el  productId pasado por parametro al carrito pasado por parametro y Retorna un objeto asi:
     {success: true/false, message: '', cart: carrito actualizado/null}*/
-    
     //En este caso tmb deberiamos ver que productId es valido ya que estamos con mongo
     //Busco el carrito donde voy a agregar el producto y la cantidad.
     try{
         const response = await this.getCartById(cartId)
         //Si no encontro el carrito o hubo un error salimos mostrando el mensaje correspondiente.
         if (!response.success){
-            console.log(`El cartId proporcionado (${cartId}) no existe o no es un ObjectId válido.`);
             return {
                 success: false, 
                 message: response.message, //Enviamos el mensaje que nos dio getCartById
                 cart: null
                 }
         }
-        else{
-            //Si se encontro el carrito vamos a proceder a agregar el nuevo producto y/o actualizar la cantidad.
-            //Trabajo con el carrito encontrado.
+        else{//Si se encontro el carrito vamos a proceder a agregar el nuevo producto y/o actualizar la cantidad.
             const searchedCart = response.cart //Trabajo con searchedCart por comodidad
-            const existProductInCart = searchedCart.products.some(item => item.product.toString() == productId )
-            //Find devuelve undefined si no encuentra elemento que cumpla condicion o sea no existe el producto.
-            //Find devuelve la primer coinciddencia
+            const existProductInCart = searchedCart.products.some(item => item.product._id == productId )
             if (existProductInCart){
                 console.log('Existe el producto con ese ID aumentaremos su cantidad...')
-                const position = searchedCart.products.findIndex(item => item.product.toString() == productId )
+                const position = searchedCart.products.findIndex(item => item.product._id == productId  )
                 //Si me pasaron cantidad por parametro pongo esa cantidad, si no, solo agrego uno.
-                !quantity ? searchedCart.products[position].quantity +=1 :  searchedCart.products[position].quantity = quantity
+                !quantity ? searchedCart.products[position].quantity +=1 :  searchedCart.products[position].quantity += quantity
                 }
             else{//Agrego el producto si no exciste en el carro
                 searchedCart.products.push({product:productId,quantity:quantity})
@@ -272,4 +266,16 @@ async clearCart(cartId){
        }
    }
 
+
+   async countProductsInCart(cartId){
+    //devuelve la cantidad de productos de un carrito determinado
+    const searchedCart = await this.getCartById(cartId)
+   
+    //Voy sumando todos los campos quiantity....
+    let productsQuantity = 0
+    searchedCart.cart.products.forEach( item => productsQuantity = productsQuantity + item.quantity)
+    return productsQuantity
+   }
 }
+
+

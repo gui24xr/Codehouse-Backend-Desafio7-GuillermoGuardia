@@ -16,6 +16,8 @@ import {router as routerCarts } from './routes/carts.router.js'
 import {router as routerProducts} from './routes/products.router.js'
 import {router as routerSessions} from './routes/sessions.router.js'
 
+import { addSessionData } from "./middlewares/middlewares.js";
+
 //crecion de instancia de express.
 const PUERTO = 8080
 export const app = express()
@@ -27,10 +29,12 @@ app.use(express.static('./src/public'));
 
 //Middlewares
 app.use(express.json())
+
 app.use(express.urlencoded({extended:true}))
 // Configurar el middleware de análisis del cuerpo para procesar datos de formularios
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('firmasecreta'))
+
 
 
 //Configuraciones:
@@ -38,6 +42,8 @@ app.use(cookieParser('firmasecreta'))
 initDataBaseConnection()
 configHandlebars(app)
 configSessionMongo(app)
+//importante este middleware este aca xq tiene variables de session
+app.use(addSessionData)
 
 
 //Routes : le decimos a la app de express que debe usar las rutas de los router

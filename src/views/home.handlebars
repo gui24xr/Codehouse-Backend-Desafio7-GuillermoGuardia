@@ -1,46 +1,15 @@
-   <div class="flex items-center justify-center h-screen bg-gradient-to-r from-blue-600 to-violet-600">
+   <div class="flex items-center justify-center h-screen bg-gradient-to-r from-amber-200 via-yellow-300 to-yellow-300">
         <div class="w-full max-w-xl flex flex-col">
-         
-            <h1 class="text-3xl text-white font-bold mb-5 drop-shadow-lg">E-COMMERCE CODERHOUSE BACKEND</h1>
-            <p class="text-white font-bold mb-5 drop-shadow-lg text-right ml-auto">Guillermo Guardia</p>
-  
-
-        {{#if sessionData.login}}
-            <!-- SI HAY USER LOGUEADO MUESTRO SU INFORMACION DE PERFIL-->
-           
-        <div class="rounded-lg shadow-xl bg-gray-900 text-white">
-            <div class="border-b border-gray-800 px-8 py-3">
-                <div class="inline-block w-3 h-3 mr-2 rounded-full bg-red-500"></div>
-                <div class="inline-block w-3 h-3 mr-2 rounded-full bg-yellow-300"></div>
-                <div class="inline-block w-3 h-3 mr-2 rounded-full bg-green-400"></div>
-                        PERFIL DE USUARIO
-            </div>
-                <div class="px-8 py-6">
-                    <p><em class="text-blue-400">const</em> <span class="text-green-400">aboutMe</span> <span class="text-pink-500">=</span> <em class="text-blue-400">function</em>() {</p>
-                    <p>&nbsp;&nbsp;<span class="text-pink-500">return</span> {</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;nombre: <span class="text-yellow-300">'{{sessionData.user.first_name}}'</span>,</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;apellido: <span class="text-yellow-300">'{{sessionData.user.last_name}}'</span>,</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;email: <span class="text-yellow-300">'{{sessionData.user.email}}'</span>,</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;edad: <span class="text-yellow-300">'{{sessionData.user.age}}'</span>,</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;rol: <span class="text-yellow-300">'{{sessionData.user.rol}}'</span>,</p>
-                    <p>&nbsp;&nbsp;}</p>
-                    <p>}</p>
-                </div>
-            </div>
-
-
-
-
-
-        {{else}}
-
+            <h1 class="text-3xl font-bold mb-5 drop-shadow-lg">E-COMMERCE CODERHOUSE BACKEND</h1>
+            <p class="font-bold mb-5 drop-shadow-lg text-right ml-auto">Guillermo Guardia</p>
             <!-- SI NO HAY USER LOGUEADO MUESTRO PARA INICIAR/REGISTRAR-->
+            <div class="border rounded p-4 flex flex-row items-center justify-center space-x-4">
+                <a href="/api/sessions/login"  class="w-full max-w-xs text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent hover:text-teal-500 hover:bg-white">Iniciar sesión</a>
+                <a href="/api/sessions/registrarse" class="w-full max-w-xs text-sm px-4 py-2 leading-none border rounded border-white hover:border-transparent hover:text-teal-500 hover:bg-white">Registrarse</a>
+            </div>
 
-          <div class="border rounded p-4 flex flex-row items-center justify-center space-x-4">
-                <a href="/api/sessions/login"  class="w-full max-w-xs text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white">Iniciar sesión</a>
-                <a href="/api/sessions/registrarse" class="w-full max-w-xs text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white">Registrarse</a>
-         </div>
-         {{/if}}
+            {{>homeswipper}}
+     
     
         </div>
 

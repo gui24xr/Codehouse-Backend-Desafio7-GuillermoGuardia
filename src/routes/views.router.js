@@ -8,12 +8,7 @@ const productManager = new ProductManager()
 
 router.get('/',(req,res)=>{
 
-    //Paso los datos de session para renderizar o no algunas cosas en portada
-    
-    //Si no existe la propiedad login la pongo en false, y si existe dejo el estado que tiene
-    //Es para que al iniciar la app no haya problemas.
-    if (!req.session.login) req.session.login = false
-    res.render('home',{sessionData: req.session})
+    res.render('home')
 })
 
 router.get('/viewproducts', async (req,res)=>{

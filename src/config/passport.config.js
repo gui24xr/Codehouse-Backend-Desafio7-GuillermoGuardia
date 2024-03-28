@@ -16,6 +16,10 @@ import GitHubStrategy from "passport-github2"
 
 import { UserModel } from '../models/user.models.js'
 import { createHash, isValidPassword } from '../utils/hashbcryp.js'
+//Para crear y asignar un carro al nuevo usuario
+import { CartsManager } from "../controllers/carts-manager-db.js"
+
+const cartsManager = new CartsManager()
 
 /*4- Creamos una instancia de local.Strategy. LocalStrategy es una clase como la de los modelos de mongo*/
 const LocalStrategy = local.Strategy
@@ -30,7 +34,7 @@ export function initializePassport(){
     //3- Un callback con el proceso que usamos para el registro. En este caso es lo quet terniamos antes en el endpoint de register.
     //4- avewriguar el tema de done
     passport.use("register", new LocalStrategy({passReqToCallback: true,usernameField: "email"}, async (req, username, password, done) => {
-        const {first_name, last_name, email, age, rol} = req.body;
+        const {first_name, last_name, email, age, role} = req.body;
         try {
             //Verificamos si ya existe un registro con ese mail
             let user = await UserModel.findOne({email:email});
@@ -42,10 +46,12 @@ export function initializePassport(){
                 email,
                 age,
                 password: createHash(password),
-                rol
+                role,
+                //cart: //await cartsManager.createCart()._id
             }
 
-            let result = await UserModel.create(newUser);
+            const newCart = await cartsManager.createCart()
+            let result = await UserModel.create({...newUser, cart: newCart });
             //Si todo resulta bien, podemos mandar done con el usuario generado. 
             return done(null, result);
         } catch (error) {

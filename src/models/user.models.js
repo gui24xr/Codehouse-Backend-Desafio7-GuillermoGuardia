@@ -24,10 +24,16 @@ const userSchema =  mongoose.Schema({
         type: Number,
         required: true
     },
-    rol:{
+    role:{
         type: String,
         required: true,
-    }
+    },
+    cart:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'carts',
+       // required: true
+    },
+
 })
 
 export const UserModel = new mongoose.model('user',userSchema)
